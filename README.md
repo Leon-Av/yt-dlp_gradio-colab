@@ -29,65 +29,34 @@
 
 Все зависимости устанавливаются автоматически при запуске кода в Google Colab.
 
-## Пример кода
+EN:
+# YouTube Video Downloader
 
-```python
-# Установка необходимых пакетов
-!pip install yt-dlp gradio
-!sudo apt update
-!sudo apt install -y ffmpeg
+This project is a simple YouTube Video Downloader implemented using Python, the `yt-dlp` library to download videos and `gradio` to create a web interface. The project runs in Google Colab, which makes it easy to use without the need to install additional software on your local machine.
 
-import gradio as gr
-import os
-from yt_dlp import YoutubeDL
+## Functionality
 
-# Создаем папку для загрузок
-download_folder = "/content/downloads"
-os.makedirs(download_folder, exist_ok=True)
+- Uploading videos from YouTube via a link.
+- Automatically merge video and audio streams into a single MP4 file.
+- Clean up downloaded files each time the application is restarted.
+- Web interface for easy user interaction.
 
-def download_video(url):
-    ydl_opts = {
-        'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
-        'outtmpl': f'{download_folder}/%(title)s.%(ext)s',
-        'merge_output_format': 'mp4',
-    }
-    
-    try:
-        with YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=True)
-            filename = ydl.prepare_filename(info)
-            return filename
-    except Exception as e:
-        return str(e)
+## How to use
 
-# Функция для очистки старых файлов
-def cleanup():
-    for file in os.listdir(download_folder):
-        file_path = os.path.join(download_folder, file)
-        try:
-            if os.path.isfile(file_path):
-                os.unlink(file_path)
-        except Exception as e:
-            print(f'Ошибка при удалении {file_path}: {e}')
+1. Go to [Google Colab link](https://colab.research.google.com/github/Leon-Av/yt-dlp_gradio-colab/blob/main/yt_dlp_gradio.ipynb).
+2. Start all the cells in notepad.
+3. After running the last cell, a public link to the web interface will appear.
+4. Paste the URL of the YouTube video into the text box and click the “Download/Download” button.
+5. Once the download is complete, the file will be available for download through the interface.
 
-# Создаем интерфейс Gradio
-with gr.Blocks() as demo:
-    gr.Markdown("## YouTube Video Downloader")
-    with gr.Row():
-        url_input = gr.Textbox(label="URL")
-    with gr.Row():
-        download_button = gr.Button("Скачать/Download")
-    with gr.Row():
-        file_output = gr.File(label="Downloaded File")
+## Installing dependencies
 
-    download_button.click(
-        fn=download_video,
-        inputs=url_input,
-        outputs=file_output
-    )
+The following packages need to be installed for the project to work:
 
-    demo.load(fn=cleanup, inputs=None, outputs=None)
+- `yt-dlp` - for downloading videos from YouTube.
+- `gradio` - for creating a web interface.
+- `ffmpeg` - for processing and combining video and audio streams.
 
-# Запускаем приложение с публичной ссылкой
-demo.launch(share=True)
+All dependencies are installed automatically when you run the code in Google Colab.
+
 ```
